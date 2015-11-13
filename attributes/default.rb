@@ -1,0 +1,5 @@
+default['lua-resty-redis']['dir'] = '/usr/local'
+default['lua-resty-redis']['version']  = '0.21'
+default['lua-resty-redis']['url'] = 'https://github.com/openresty/lua-resty-redis/archive'
+default['lua-resty-redis']['checksum'] = 'a2c2686b18c4ab2943d1cb27da80f6b9e1902b78e50dfd0367c164244e193e73'
+# default['lua-resty-redis']['creates'] = 'lib/lua/5.1/cjson.so'
