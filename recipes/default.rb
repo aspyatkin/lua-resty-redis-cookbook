@@ -1,13 +1,14 @@
 include_recipe 'build-essential'
 include_recipe 'lua'
+id = 'lua-resty-redis'
 
-lua_resty_redis_tar_path = ::File.join Chef::Config['file_cache_path'], "lua-resty-redis-#{node['lua-resty-redis']['version']}.tar.gz"
-lua_resty_redis_src_url = "#{node['lua-resty-redis']['url']}/v#{node['lua-resty-redis']['version']}.tar.gz"
-lua_resty_redis_src_dir = ::File.join Chef::Config['file_cache_path'], "lua-resty-redis-#{node['lua-resty-redis']['version']}"
+lua_resty_redis_tar_path = ::File.join Chef::Config[:file_cache_path], "lua-resty-redis-#{node[id][:version]}.tar.gz"
+lua_resty_redis_src_url = "#{node[id][:url]}/v#{node[id][:version]}.tar.gz"
+lua_resty_redis_src_dir = ::File.join Chef::Config[:file_cache_path], "lua-resty-redis-#{node[id][:version]}"
 
 remote_file lua_resty_redis_tar_path do
   source lua_resty_redis_src_url
-  checksum node['lua-resty-redis']['checksum']
+  checksum node[id][:checksum]
   mode 0644
 end
 
@@ -18,14 +19,9 @@ end
 makefile_path = ::File.join lua_resty_redis_src_dir, 'Makefile'
 
 execute "tar --no-same-owner -zxf #{::File.basename lua_resty_redis_tar_path } -C #{lua_resty_redis_src_dir} --strip-components 1" do
-  cwd Chef::Config['file_cache_path']
+  cwd Chef::Config[:file_cache_path]
   creates makefile_path
 end
-
-# cookbook_file 'patch Makefile' do
-#   path makefile_path
-#   source 'Makefile'
-# end
 
 execute 'make install lua-resty-redis package' do
   environment({
@@ -34,5 +30,5 @@ execute 'make install lua-resty-redis package' do
   })
   command 'make install'
   cwd lua_resty_redis_src_dir
-  # creates ::File.join(node['lua-cjson']['dir'], node['lua-cjson']['creates'])
+  creates ::File.join node[id][:dir], node[id][:creates]
 end
